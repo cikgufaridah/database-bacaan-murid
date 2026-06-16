@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>App Database Pemantauan Bacaan</title>
+<style>
+body{font-family:"Comic Sans MS",Arial,sans-serif;margin:0;padding:20px;background:linear-gradient(135deg,#fff3c4,#dff7ff,#f3e4ff);color:#222}
+.container{max-width:1280px;margin:auto;background:#fff;border-radius:24px;padding:25px;box-shadow:0 8px 26px rgba(0,0,0,.15)}
+h1{text-align:center;color:#6b3fa0;margin:0;font-size:30px}.subtitle{text-align:center;color:#555;margin:8px 0 18px}
+.dashboard{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:18px 0}
+.card{padding:14px;border-radius:18px;text-align:center;font-weight:bold;box-shadow:0 3px 8px rgba(0,0,0,.08)}
+.card span{display:block;font-size:26px;color:#5b2c91}.c1{background:#eadfff}.c2{background:#dff7ff}.c3{background:#e6ffd9}.c4{background:#fff0c7}.c5{background:#ffdede}.c6{background:#e3fff5}
+.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+label{font-weight:bold;font-size:14px}
+input,select,textarea{width:100%;padding:10px;border:2px solid #ddd;border-radius:13px;font-family:inherit;font-size:15px;box-sizing:border-box}
+textarea{min-height:72px}.section{background:#6b3fa0;color:white;display:inline-block;padding:8px 14px;border-radius:16px;margin:18px 0 8px;font-weight:bold}
+.note{background:#f7f1ff;border:2px dashed #b99cff;padding:12px;border-radius:16px;margin:15px 0;font-size:14px}
+.buttons{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:18px 0}
+button{border:none;padding:11px 17px;border-radius:14px;font-family:inherit;font-size:15px;font-weight:bold;cursor:pointer;box-shadow:0 4px 8px rgba(0,0,0,.13)}
+.save{background:#35c878;color:white}.clear{background:#ffbb45;color:#222}.export{background:#4d96ff;color:white}.import{background:#18a999;color:white}.print{background:#9b72ff;color:white}.danger{background:#ff5c5c;color:white}
+.search{margin:15px 0}
+table{width:100%;border-collapse:collapse;margin-top:12px;font-size:14px}
+th{background:#6b3fa0;color:white;padding:10px;border:1px solid white}
+td{border:1px solid #ddd;padding:9px;vertical-align:top}tr:nth-child(even){background:#faf7ff}
+.small-btn{padding:7px 10px;font-size:13px;border-radius:10px;margin:2px}.edit{background:#ffd966;color:#222}.delete{background:#ff6b6b;color:white}
+.badge{padding:4px 8px;border-radius:10px;font-weight:bold;display:inline-block}.green{background:#d7ffd8}.yellow{background:#fff1b8}.red{background:#ffd1d1}
+@media print{body{background:white}.form-area,.buttons,.search,.action-col,.note{display:none}.container{box-shadow:none}}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>📚 App Database Pemantauan Bacaan Murid</h1>
+<div class="subtitle">Rekod pemantauan bacaan 2 kali setahun | Aras 1 hingga Aras 12</div>
+
+<div class="dashboard">
+  <div class="card c1">Jumlah Murid<span id="jumlah">0</span></div>
+  <div class="card c2">Meningkat<span id="meningkat">0</span></div>
+  <div class="card c3">Mencapai Sasaran<span id="sasaran">0</span></div>
+  <div class="card c4">Perlu Pemantauan<span id="pantau">0</span></div>
+  <div class="card c5">Kritikal<span id="kritikal">0</span></div>
+  <div class="card c6">Purata Peningkatan<span id="purata">0</span></div>
+</div>
+
+<div class="note">
+<b>Panduan Aras:</b>
+Aras 1 Kenal huruf | Aras 2 Bunyi huruf | Aras 3 KV | Aras 4 VK | Aras 5 KVKV |
+Aras 6 KVKVK | Aras 7 Ayat mudah | Aras 8 Perenggan pendek | Aras 9 Petikan pendek |
+Aras 10 Petikan lancar | Aras 11 Petikan + kefahaman | Aras 12 Lancar dan memahami teks.
+</div>
+
+<div class="form-area">
+<input type="hidden" id="editIndex">
+
+<div class="section">Maklumat Murid</div>
+<div class="form-grid">
+  <div><label>Nama Murid</label><input id="nama" placeholder="Contoh: Raisya binti..."></div>
+  <div><label>Kelas</label><input id="kelas" placeholder="Contoh: Tahun 3 Amanah"></div>
+  <div><label>Jantina</label><select id="jantina"><option value="">Pilih</option><option>Lelaki</option><option>Perempuan</option></select></div>
+  <div><label>Nama Penjaga</label><input id="penjaga" placeholder="Nama ibu bapa / penjaga"></div>
+  <div><label>No. Telefon</label><input id="telefon" placeholder="Contoh: 8xxxxxx"></div>
+  <div><label>Status Semasa</label><select id="status"><option value="">Pilih</option><option>🟢 Mencapai Sasaran</option><option>🟡 Perlu Pemantauan</option><option>🔴 Kritikal</option></select></div>
+</div>
+
+<div class="section">Penilaian Bacaan 1</div>
+<div class="form-grid">
+  <div><label>Tarikh Penilaian 1</label><input id="tarikh1" type="date"></div>
+  <div><label>Aras Bacaan 1</label><select id="aras1"></select></div>
+  <div><label>Catatan Penilaian 1</label><input id="catatan1" placeholder="Contoh: Masih keliru b dan d"></div>
+</div>
+
+<div class="section">Penilaian Bacaan 2</div>
+<div class="form-grid">
+  <div><label>Tarikh Penilaian 2</label><input id="tarikh2" type="date"></div>
+  <div><label>Aras Bacaan 2</label><select id="aras2"></select></div>
+  <div><label>Catatan Penilaian 2</label><input id="catatan2" placeholder="Contoh: Sudah boleh membaca ayat mudah"></div>
+</div>
+
+<div class="section">Catatan Guru / Intervensi</div>
+<textarea id="catatanGuru" placeholder="Contoh: Diberi latihan homelink KVKV, bimbingan 2 kali seminggu, perlu pemantauan..."></textarea>
+
+<div class="buttons">
+  <button class="save" onclick="simpan()">💾 Simpan Data</button>
+  <button class="clear" onclick="kosongkan()">🧹 Kosongkan Borang</button>
+  <button class="export" onclick="exportCSV()">⬇️ Eksport CSV</button>
+  <button class="export" onclick="exportJSON()">💾 Backup Data</button>
+  <button class="import" onclick="document.getElementById('importFile').click()">📂 Import Backup</button>
+  <button class="print" onclick="window.print()">🖨️ Cetak Senarai</button>
+  <button class="danger" onclick="padamSemua()">🗑️ Padam Semua</button>
+</div>
+<input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(event)">
+</div>
+
+<div class="search"><input id="carian" onkeyup="papar()" placeholder="🔎 Cari nama, kelas, aras, status atau catatan..."></div>
+
+<table>
+<thead><tr><th>Bil.</th><th>Nama</th><th>Kelas</th><th>Jantina</th><th>Penilaian 1</th><th>Penilaian 2</th><th>Peningkatan</th><th>Status</th><th>Catatan Guru</th><th class="action-col">Tindakan</th></tr></thead>
+<tbody id="jadual"></tbody>
+</table>
+</div>
+
+<script>
+let rekod = JSON.parse(localStorage.getItem("appDatabaseBacaanFaridah")) || [];
+function isiAras(){let pilihan='<option value="">Pilih Aras</option>';for(let i=1;i<=12;i++){pilihan+=`<option>Aras ${i}</option>`;}aras1.innerHTML=pilihan;aras2.innerHTML=pilihan;}
+isiAras();
+function noAras(a){if(!a)return 0;return parseInt(String(a).replace("Aras ",""))||0;}
+function statusClass(s){if(s.includes("Mencapai"))return"green";if(s.includes("Pemantauan"))return"yellow";if(s.includes("Kritikal"))return"red";return"";}
+function simpan(){
+ const murid={nama:nama.value.trim(),kelas:kelas.value.trim(),jantina:jantina.value,penjaga:penjaga.value.trim(),telefon:telefon.value.trim(),status:status.value,tarikh1:tarikh1.value,aras1:aras1.value,catatan1:catatan1.value.trim(),tarikh2:tarikh2.value,aras2:aras2.value,catatan2:catatan2.value.trim(),catatanGuru:catatanGuru.value.trim()};
+ if(!murid.nama){alert("Sila masukkan nama murid.");return;}
+ if(editIndex.value===""){rekod.push(murid);}else{rekod[editIndex.value]=murid;}
+ localStorage.setItem("appDatabaseBacaanFaridah",JSON.stringify(rekod));kosongkan();papar();
+}
+function papar(){
+ const q=carian.value.toLowerCase();jadual.innerHTML="";
+ const filtered=rekod.filter(r=>Object.values(r).join(" ").toLowerCase().includes(q));
+ filtered.forEach((r,i)=>{
+ const realIndex=rekod.indexOf(r);const beza=noAras(r.aras2)-noAras(r.aras1);
+ const simbol=(r.aras1&&r.aras2&&beza>0)?"+"+beza:(r.aras1&&r.aras2?beza:"-");
+ const p1=`${r.aras1||"-"}<br><small>${r.tarikh1||""}</small><br><small>${r.catatan1||""}</small>`;
+ const p2=`${r.aras2||"-"}<br><small>${r.tarikh2||""}</small><br><small>${r.catatan2||""}</small>`;
+ jadual.innerHTML+=`<tr><td>${i+1}</td><td>${r.nama}</td><td>${r.kelas}</td><td>${r.jantina}</td><td>${p1}</td><td>${p2}</td><td><b>${simbol}</b></td><td><span class="badge ${statusClass(r.status)}">${r.status||"-"}</span></td><td>${r.catatanGuru||""}</td><td class="action-col"><button class="small-btn edit" onclick="editData(${realIndex})">Edit</button><button class="small-btn delete" onclick="padam(${realIndex})">Padam</button></td></tr>`;
+ });
+ jumlah.textContent=rekod.length;meningkat.textContent=rekod.filter(r=>noAras(r.aras2)>noAras(r.aras1)).length;sasaran.textContent=rekod.filter(r=>r.status.includes("Mencapai")).length;pantau.textContent=rekod.filter(r=>r.status.includes("Pemantauan")).length;kritikal.textContent=rekod.filter(r=>r.status.includes("Kritikal")).length;
+ const lengkap=rekod.filter(r=>r.aras1&&r.aras2);const jumlahBeza=lengkap.reduce((sum,r)=>sum+(noAras(r.aras2)-noAras(r.aras1)),0);purata.textContent=lengkap.length?(jumlahBeza/lengkap.length).toFixed(1):"0";
+}
+function editData(i){const r=rekod[i];editIndex.value=i;nama.value=r.nama;kelas.value=r.kelas;jantina.value=r.jantina;penjaga.value=r.penjaga;telefon.value=r.telefon;status.value=r.status;tarikh1.value=r.tarikh1;aras1.value=r.aras1;catatan1.value=r.catatan1;tarikh2.value=r.tarikh2;aras2.value=r.aras2;catatan2.value=r.catatan2;catatanGuru.value=r.catatanGuru;window.scrollTo({top:0,behavior:"smooth"});}
+function padam(i){if(confirm("Padam rekod murid ini?")){rekod.splice(i,1);localStorage.setItem("appDatabaseBacaanFaridah",JSON.stringify(rekod));papar();}}
+function padamSemua(){if(confirm("Padam semua data? Pastikan Cikgu sudah buat backup dahulu.")){rekod=[];localStorage.removeItem("appDatabaseBacaanFaridah");papar();}}
+function kosongkan(){editIndex.value="";["nama","kelas","penjaga","telefon","tarikh1","catatan1","tarikh2","catatan2","catatanGuru"].forEach(id=>document.getElementById(id).value="");["jantina","status","aras1","aras2"].forEach(id=>document.getElementById(id).value="");}
+function exportCSV(){if(rekod.length===0){alert("Tiada data untuk dieksport.");return;}const headers=["Nama","Kelas","Jantina","Penjaga","Telefon","Tarikh Penilaian 1","Aras 1","Catatan 1","Tarikh Penilaian 2","Aras 2","Catatan 2","Peningkatan","Status","Catatan Guru"];const rows=rekod.map(r=>[r.nama,r.kelas,r.jantina,r.penjaga,r.telefon,r.tarikh1,r.aras1,r.catatan1,r.tarikh2,r.aras2,r.catatan2,noAras(r.aras2)-noAras(r.aras1),r.status,r.catatanGuru]);const csv=headers.join(",")+"\n"+rows.map(row=>row.map(x=>`"${String(x).replace(/"/g,'""')}"`).join(",")).join("\n");const blob=new Blob([csv],{type:"text/csv;charset=utf-8;"});const link=document.createElement("a");link.href=URL.createObjectURL(blob);link.download="database_pemantauan_bacaan.csv";link.click();}
+function exportJSON(){const blob=new Blob([JSON.stringify(rekod,null,2)],{type:"application/json"});const link=document.createElement("a");link.href=URL.createObjectURL(blob);link.download="backup_database_bacaan.json";link.click();}
+function importJSON(event){const file=event.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=function(e){try{const imported=JSON.parse(e.target.result);if(Array.isArray(imported)){rekod=imported;localStorage.setItem("appDatabaseBacaanFaridah",JSON.stringify(rekod));papar();alert("Backup berjaya dimasukkan.");}else alert("Fail backup tidak sesuai.");}catch(err){alert("Fail tidak dapat dibaca.");}};reader.readAsText(file);}
+papar();
+</script>
+</body>
+</html>
