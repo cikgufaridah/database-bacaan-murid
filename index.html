@@ -138,7 +138,7 @@ async function simpan(){
     await db.collection("murid").add(murid);
     rekod.push(murid);
     localStorage.setItem("appDatabaseBacaanFaridah",JSON.stringify(rekod));
-    kosongan();
+    kosongkan();
     papar();
     alert("Data berjaya disimpan ke Firebase.");
   }catch(error){
