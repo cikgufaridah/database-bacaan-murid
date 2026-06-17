@@ -124,7 +124,13 @@ let rekod = JSON.parse(localStorage.getItem("appDatabaseBacaanFaridah")) || [];
 function isiAras(){let pilihan='<option value="">Pilih Aras</option>';for(let i=1;i<=12;i++){pilihan+=`<option>Aras ${i}</option>`;}aras1.innerHTML=pilihan;aras2.innerHTML=pilihan;}
 isiAras();
 function noAras(a){if(!a)return 0;return parseInt(String(a).replace("Aras ",""))||0;}
-function statusClass(s){if(s.includes("Mencapai"))return"green";if(s.includes("Pemantauan"))return"yellow";if(s.includes("Kritikal"))return"red";return"";}
+function statusClass(s){
+  s = s || "";
+  if(s.includes("Mencapai")) return "green";
+  if(s.includes("Pemantauan")) return "yellow";
+  if(s.includes("Kritikal")) return "red";
+  return "";
+}
 async function simpan(){
   const murid={nama:nama.value.trim(),kelas:kelas.value.trim(),jantina:jantina.value,penjaga:penjaga.value.trim(),telefon:telefon.value.trim(),status:status.value,tarikh1:tarikh1.value,aras1:aras1.value,catatan1:catatan1.value.trim(),tarikh2:tarikh2.value,aras2:aras2.value,catatan2:catatan2.value.trim(),catatanGuru:catatanGuru.value.trim(),masaSimpan:firebase.firestore.FieldValue.serverTimestamp()};
   if(!murid.nama){alert("Sila masukkan nama murid.");return;}
