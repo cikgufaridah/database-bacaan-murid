@@ -138,6 +138,7 @@ async function simpan(){
   }catch(error){
     alert("Data gagal disimpan ke Firebase: "+error.message);
   }
+}
 function papar(){
  const q=carian.value.toLowerCase();jadual.innerHTML="";
  const filtered=rekod.filter(r=>Object.values(r).join(" ").toLowerCase().includes(q));
