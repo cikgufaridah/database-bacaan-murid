@@ -120,7 +120,7 @@ Aras 10 Petikan lancar | Aras 11 Petikan + kefahaman | Aras 12 Lancar dan memaha
 </div>
 
 <script>
-let rekod = JSON.parse(localStorage.getItem("appDatabaseBacaanFaridah")) || [];
+let rekod = [];
 function isiAras(){let pilihan='<option value="">Pilih Aras</option>';for(let i=1;i<=12;i++){pilihan+=`<option>Aras ${i}</option>`;}aras1.innerHTML=pilihan;aras2.innerHTML=pilihan;}
 isiAras();
 function noAras(a){if(!a)return 0;return parseInt(String(a).replace("Aras ",""))||0;}
