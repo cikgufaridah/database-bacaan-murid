@@ -132,7 +132,7 @@ function statusClass(s){
   return "";
 }
 async function simpan(){
-  const murid={nama:nama.value.trim(),kelas:kelas.value.trim(),jantina:jantina.value,penjaga:penjaga.value.trim(),telefon:telefon.value.trim(),status:status.value,tarikh1:tarikh1.value,aras1:aras1.value,catatan1:catatan1.value.trim(),tarikh2:tarikh2.value,aras2:aras2.value,catatan2:catatan2.value.trim(),catatanGuru:catatanGuru.value.trim(),masaSimpan:firebase.firestore.FieldValue.serverTimestamp()};
+ const murid={nama:nama.value.trim(),kelas:kelas.value.trim(),jantina:jantina.value,penjaga:penjaga.value.trim(),telefon:telefon.value.trim(),status:status.value || "",tarikh1:tarikh1.value,aras1:aras1.value,catatan1:catatan1.value.trim(),tarikh2:tarikh2.value,aras2:aras2.value,catatan2:catatan2.value.trim(),catatanGuru:catatanGuru.value.trim(),masaSimpan:firebase.firestore.FieldValue.serverTimestamp()};
   if(!murid.nama){alert("Sila masukkan nama murid.");return;}
   try{
     await db.collection("murid").add(murid);
