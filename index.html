@@ -27,6 +27,26 @@ td{border:1px solid #ddd;padding:9px;vertical-align:top}tr:nth-child(even){backg
 .badge{padding:4px 8px;border-radius:10px;font-weight:bold;display:inline-block}.green{background:#d7ffd8}.yellow{background:#fff1b8}.red{background:#ffd1d1}
 @media print{body{background:white}.form-area,.buttons,.search,.action-col,.note{display:none}.container{box-shadow:none}}
 </style>
+  
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyCgRm2v_BD3JuPdHnYsoYyxu_HKQi4SAc8",
+  authDomain: "database-bacaan-murd-srbm.firebaseapp.com",
+  projectId: "database-bacaan-murd-srbm",
+  storageBucket: "database-bacaan-murd-srbm.firebasestorage.app",
+  messagingSenderId: "320334477436",
+  appId: "1:320334477436:web:b5a8d5041af8dfb57631f9"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+</script>
+
+</head>
+<body>
 </head>
 <body>
 <div class="container">
@@ -105,12 +125,19 @@ function isiAras(){let pilihan='<option value="">Pilih Aras</option>';for(let i=
 isiAras();
 function noAras(a){if(!a)return 0;return parseInt(String(a).replace("Aras ",""))||0;}
 function statusClass(s){if(s.includes("Mencapai"))return"green";if(s.includes("Pemantauan"))return"yellow";if(s.includes("Kritikal"))return"red";return"";}
-function simpan(){
- const murid={nama:nama.value.trim(),kelas:kelas.value.trim(),jantina:jantina.value,penjaga:penjaga.value.trim(),telefon:telefon.value.trim(),status:status.value,tarikh1:tarikh1.value,aras1:aras1.value,catatan1:catatan1.value.trim(),tarikh2:tarikh2.value,aras2:aras2.value,catatan2:catatan2.value.trim(),catatanGuru:catatanGuru.value.trim()};
- if(!murid.nama){alert("Sila masukkan nama murid.");return;}
- if(editIndex.value===""){rekod.push(murid);}else{rekod[editIndex.value]=murid;}
- localStorage.setItem("appDatabaseBacaanFaridah",JSON.stringify(rekod));kosongkan();papar();
-}
+async function simpan(){
+  const murid={nama:nama.value.trim(),kelas:kelas.value.trim(),jantina:jantina.value,penjaga:penjaga.value.trim(),telefon:telefon.value.trim(),status:status.value,tarikh1:tarikh1.value,aras1:aras1.value,catatan1:catatan1.value.trim(),tarikh2:tarikh2.value,aras2:aras2.value,catatan2:catatan2.value.trim(),catatanGuru:catatanGuru.value.trim(),masaSimpan:firebase.firestore.FieldValue.serverTimestamp()};
+  if(!murid.nama){alert("Sila masukkan nama murid.");return;}
+  try{
+    await db.collection("murid").add(murid);
+    rekod.push(murid);
+    localStorage.setItem("appDatabaseBacaanFaridah",JSON.stringify(rekod));
+    kosongan();
+    papar();
+    alert("Data berjaya disimpan ke Firebase.");
+  }catch(error){
+    alert("Data gagal disimpan ke Firebase: "+error.message);
+  }
 function papar(){
  const q=carian.value.toLowerCase();jadual.innerHTML="";
  const filtered=rekod.filter(r=>Object.values(r).join(" ").toLowerCase().includes(q));
